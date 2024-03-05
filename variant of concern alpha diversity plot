@@ -1,0 +1,32 @@
+#variant of concern data analysis 
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from statannotations.Annotator import Annotator
+import seaborn as sns
+fig = plt.figure()
+import scipy.stats as stats
+#define colors
+my_colors = ["#80b1d3", "#fdb462", "#bc80bd"]
+sns.set_palette( my_colors )
+
+df = pd.read_csv("alpha-diversity.csv")
+x="condition"
+y="Shannon"
+order = ["Pre-VOC", "Delta", "Omicron"]
+
+pairs=[("Omicron", "Pre-VOC"),
+       ("Omicron", "Delta"),
+       ("Delta", "Pre-VOC")]
+ax = sns.violinplot( x="condition", y="Shannon", data=df, order = order, scale="count", cut=2, linewidth=1)
+
+ylims=ax.get_ylim()
+ax.set(ylim=ylims)
+#fig.show()
+annotator = Annotator(ax, pairs, data=df, x=x, y=y, order=order)
+annotator.configure(test='Kruskal', text_format='star', loc='inside', verbose=2)
+annotator.apply_and_annotate()
+annotator
+#save your image
+plt.savefig('Shannon.png', dpi=600, bbox_inches='tight')
+
